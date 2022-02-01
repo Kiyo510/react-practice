@@ -1,7 +1,8 @@
 name: milestone
 on:
   schedule:
-    - cron: '58 * * * TUE'
+  # UTC時間で設定
+    - cron: '02 11 * * TUE'
 
 jobs:
   create-milestone:
