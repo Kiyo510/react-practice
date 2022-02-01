@@ -3,7 +3,7 @@ on:
   push:
   schedule:
   # UTC時間で設定
-    - cron: '03 11 * * *'
+    - cron: '18 * * * *'
 
 jobs:
   create-milestone:
@@ -21,6 +21,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           due_time=$(date -d"tue 14 days" +"%Y-%m-%dT23:59:59Z")
-          title=release_$(date -d"mon" +"%Y-%m-%d週")
+          title=release_$(date -d"tue 14 days" +"%Y%m%d")
           milestone=`.github/workflows/bin/create-milestone.sh ${{ github.repository }} ${title} ${due_time}`
           echo ::set-output name=milestone_id::$milestone
