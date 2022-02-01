@@ -1,9 +1,9 @@
 name: milestone
 on:
-  push:
   schedule:
   # UTC時間で設定
-    - cron: '18 * * * *'
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   create-milestone:
