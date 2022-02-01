@@ -1,5 +1,6 @@
 name: milestone
 on:
+  push:
   schedule:
   # UTC時間で設定
     - cron: '03 11 * * *'
