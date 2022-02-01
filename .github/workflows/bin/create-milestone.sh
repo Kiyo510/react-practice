@@ -4,7 +4,7 @@ repository=$1
 title=$2
 due_time=$3
 
-milestone=$(curl -XPOST \
+milestone=$(curl -s -XPOST \
   https://api.github.com/repos/${repository}/milestones \
   -H "Authorization: token ${GITHUB_TOKEN}" \
   -H "Content-Type: application/json" \

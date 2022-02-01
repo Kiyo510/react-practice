@@ -24,3 +24,4 @@ jobs:
           title=release_$(date -d"tue 14 days" +"%Y%m%d")
           milestone=`.github/workflows/bin/create-milestone.sh ${{ github.repository }} ${title} ${due_time}`
           echo ::set-output name=milestone_id::$milestone
+          echo ${{ steps.milestone.outputs.milestone_id }} 
