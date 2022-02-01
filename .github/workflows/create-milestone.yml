@@ -2,7 +2,7 @@ name: milestone
 on:
   schedule:
   # UTC時間で設定
-    - cron: '*/5 * * * *'
+    - cron: '*/20 * * * *'
   workflow_dispatch:
 
 jobs:
