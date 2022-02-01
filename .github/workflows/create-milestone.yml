@@ -19,6 +19,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           due_time=$(date -d"tue 14 days" +"%Y-%m-%dT23:59:59Z")
-          title=$(date -d"mon" +"%Y-%m-%d週")
+          title=release_$(date -d"mon" +"%Y-%m-%d週")
           milestone=`.github/workflows/bin/create-milestone.sh ${{ github.repository }} ${title} ${due_time}`
           echo ::set-output name=milestone_id::$milestone
