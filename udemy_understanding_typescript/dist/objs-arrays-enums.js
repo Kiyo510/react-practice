@@ -1,3 +1,4 @@
+"use strict";
 // const person: {
 //   name: string;
 //   age: number;
@@ -17,19 +18,19 @@ var Role;
     Role[Role["READ_ONLY"] = 1] = "READ_ONLY";
     Role[Role["AUTHOR"] = 2] = "AUTHOR";
 })(Role || (Role = {}));
-var person = {
+const person = {
     name: 'yota',
     age: 30,
     hobbies: ['Sports', 'Cooking'],
-    role: Role.ADMIN
+    role: Role.ADMIN,
 };
-var favariteActivities;
+let favariteActivities;
 favariteActivities = ['Sports'];
 console.log(person);
-for (var _i = 0, _a = person.hobbies; _i < _a.length; _i++) {
-    var hobby = _a[_i];
+for (const hobby of person.hobbies) {
     console.log(hobby.toUpperCase());
 }
 if (person.role === Role.ADMIN) {
     console.log('ADMIN!');
 }
+//# sourceMappingURL=objs-arrays-enums.js.map
