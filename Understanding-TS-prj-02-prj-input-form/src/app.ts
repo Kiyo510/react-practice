@@ -1,5 +1,35 @@
-//autbind decorator
-function Autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+interface Validatable {
+  value: string | number;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+function validated(validatableInput: Validatable) {
+  let isValid = true;
+  if (validatableInput.required) {
+    isValid = isValid && validatableInput.value.toString().trim().length !== 0;
+  }
+  if (validatableInput.minLength != null && typeof validatableInput.value === 'string') {
+    isValid = isValid && validatableInput.value.length >= validatableInput.minLength;
+  }
+  if (validatableInput.maxLength != null && typeof validatableInput.value === 'string') {
+    isValid = isValid && validatableInput.value.length <= validatableInput.maxLength;
+  }
+  if (validatableInput.min != null && typeof validatableInput.value === 'number') {
+    isValid = isValid && validatableInput.value >= validatableInput.min;
+  }
+  if (validatableInput.max != null && typeof validatableInput.value === 'number') {
+    isValid = isValid && validatableInput.value <= validatableInput.max;
+  }
+
+  return isValid;
+}
+
+// autobind decorator
+function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjDescriptor: PropertyDescriptor = {
     configurable: true,
@@ -17,67 +47,91 @@ class ProjectInput {
   hostElement: HTMLDivElement;
   element: HTMLFormElement;
   titleInputElement: HTMLInputElement;
-  discriptionElement: HTMLInputElement;
-  manDayElement: HTMLInputElement;
+  descriptionInputElement: HTMLInputElement;
+  mandayInputElement: HTMLInputElement;
 
   constructor() {
     this.templateElement = document.getElementById(
       "project-input"
-    ) as HTMLTemplateElement;
-    this.hostElement = document.getElementById("app") as HTMLDivElement;
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
 
     const importedNode = document.importNode(
       this.templateElement.content,
       true
     );
-
     this.element = importedNode.firstElementChild as HTMLFormElement;
+    this.element.id = "user-input";
+
     this.titleInputElement = this.element.querySelector(
       "#title"
     ) as HTMLInputElement;
-    this.discriptionElement = this.element.querySelector(
-      "description"
+    this.descriptionInputElement = this.element.querySelector(
+      "#description"
     ) as HTMLInputElement;
-    this.manDayElement = this.element.querySelector(
-      "manday"
+    this.mandayInputElement = this.element.querySelector(
+      "#manday"
     ) as HTMLInputElement;
 
-    this.element.id = "user-input";
     this.configure();
     this.attach();
+  }
+
+  private gatherUserInput(): [string, string, number] | void {
+    const enteredTitle = this.titleInputElement.value;
+    const enteredDescription = this.descriptionInputElement.value;
+    const enteredManday = this.mandayInputElement.value;
+
+    const titleValidatable: Validatable = {
+      value: enteredTitle,
+      required: true
+    }
+    const descriptionValidatable: Validatable = {
+      value: enteredDescription,
+      required: true,
+      maxLength: 150,
+      minLength: 10
+    }
+    const manDayValidatable: Validatable = {
+      value: +enteredManday,
+      required: true,
+      max: 5,
+      min: 1
+    }
+
+    if (
+      !validated(titleValidatable) ||
+      !validated(descriptionValidatable) ||
+      !validated(manDayValidatable) ||
+    ) {
+      alert("入力値が正しくありません。再度お試しください。");
+      return;
+    } else {
+      return [enteredTitle, enteredDescription, +enteredManday];
+    }
+  }
+
+  private clearInputs() {
+    this.titleInputElement.value = "";
+    this.descriptionInputElement.value = "";
+    this.mandayInputElement.value = "";
+  }
+
+  @autobind
+  private submitHandler(event: Event) {
+    event.preventDefault();
+    const userInput = this.gatherUserInput();
+    if (Array.isArray(userInput)) {
+      const [title, desc, manday] = userInput;
+      console.log(title, desc, manday);
+      this.clearInputs();
+    }
   }
 
   private configure() {
     this.element.addEventListener("submit", this.submitHandler);
   }
 
-  private getherUserInput(): [string, string, number] | void {
-    const enterdTitle = this.titleInputElement.value;
-    const enterdDescription = this.discriptionElement.value;
-    const enteredManDay = this.manDayElement.value;
-
-    if (
-      enterdTitle.trim().length === 0 ||
-      enterdDescription.trim().length === 0 ||
-      enteredManDay.trim().length === 0
-    ) {
-      alert("入力値が正しくありません。");
-      return;
-    } else {
-      return [enterdTitle, enterdDescription, +enteredManDay];
-    }
-  }
-  @Autobind
-  private submitHandler(event: Event) {
-    console.log(1111);
-
-    event.preventDefault();
-    const userInput = this.getherUserInput();
-    if (Array.isArray(userInput)) {
-      const [title, desc, manday] = userInput;
-      console.log(title, desc, manday);
-    }
-  }
   private attach() {
     this.hostElement.insertAdjacentElement("afterbegin", this.element);
   }
