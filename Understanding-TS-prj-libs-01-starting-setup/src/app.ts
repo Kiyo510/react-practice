@@ -34,8 +34,6 @@ function searchAddressHandler(event: Event) {
     .catch((err) => {
       console.log(err);
     });
-
-
 }
 
 form.addEventListener("submit", searchAddressHandler);
